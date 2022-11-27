@@ -18,6 +18,7 @@ Ripple = 'XRP-USD'
 Bitcoincash = 'BCH-USD'
 Cardano = 'ADA-USD'
 
+ 
 
 #access to Data
 
