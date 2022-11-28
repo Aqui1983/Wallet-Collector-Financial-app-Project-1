@@ -80,179 +80,11 @@ bch_hist
 ada_hist
 
 
-# Stock - actions
-
-st.write("# Stock - actions")
-btc_actions = BTC_Data.actions
-eth_actions = ETH_Data.actions
-xrp_actions = XRP_Data.actions
-bch_actions = BCH_Data.actions
-ada_actions = ADA_Data.actions
-
-btc_actions
-eth_actions
-xrp_actions
-bch_actions
-ada_actions
-
-
-# Stock - dividends
-
-st.write("# Stock - dividends")
-btc_dividends = BTC_Data.dividends
-eth_dividends = ETH_Data.dividends
-xrp_dividends = XRP_Data.dividends
-bch_dividends = BCH_Data.dividends
-ada_dividends = ADA_Data.dividends
-
-btc_dividends
-eth_dividends
-xrp_dividends
-bch_dividends
-ada_dividends
-
-
-# Stock - splits
-
-st.write("# Stock - splits")
-btc_splits = BTC_Data.splits
-eth_splits = ETH_Data.splits
-xrp_splits = XRP_Data.splits
-bch_splits = BCH_Data.splits
-ada_splits = ADA_Data.splits
-
-btc_splits
-eth_splits
-xrp_splits
-bch_splits
-ada_splits
-
-
-# Stock - financials
-
-st.write("# Stock - financials")
-btc_financials = BTC_Data.financials
-eth_financials = ETH_Data.financials
-xrp_financials = XRP_Data.financials
-bch_financials = BCH_Data.financials
-ada_financials = ADA_Data.financials
-
-btc_financials
-eth_financials
-xrp_financials
-bch_financials
-ada_financials
-
-# Stock - quarterly_financials
-
-st.write("# Stock - quarterly_financials")
-btc_quarterly_financials = BTC_Data.quarterly_financials
-eth_quarterly_financials = ETH_Data.quarterly_financials
-xrp_quarterly_financials = XRP_Data.quarterly_financials
-bch_quarterly_financials = BCH_Data.quarterly_financials
-ada_quarterly_financials = ADA_Data.quarterly_financials
-
-btc_quarterly_financials
-eth_quarterly_financials
-xrp_quarterly_financials
-bch_quarterly_financials
-ada_quarterly_financials
-
-
-# Stock - major_holders
-
-st.write("# Stock - major_holders")
-btc_major_holders = BTC_Data.major_holders
-eth_major_holders = ETH_Data.major_holders
-xrp_major_holders = XRP_Data.major_holders
-bch_major_holders = BCH_Data.major_holders
-ada_major_holders = ADA_Data.major_holders
-
-btc_major_holders
-eth_major_holders
-xrp_major_holders
-bch_major_holders
-ada_major_holders
 
 
 
-# Stock - institutional_holders
-
-st.write("# Stock - institutional_holders")
-btc_ih = BTC_Data.institutional_holders
-eth_ih = ETH_Data.institutional_holders
-xrp_ih = XRP_Data.institutional_holders
-bch_ih = BCH_Data.institutional_holders
-ada_ih = ADA_Data.institutional_holders
-
-btc_ih
-eth_ih
-xrp_ih
-bch_ih
-ada_ih
 
 
-# Stock - balance_sheet
-
-st.write("# Stock - balance_sheet")
-btc_bs = BTC_Data.balance_sheet
-eth_bs = ETH_Data.balance_sheet
-xrp_bs = XRP_Data.balance_sheet
-bch_bs = BCH_Data.balance_sheet
-ada_bs = ADA_Data.balance_sheet
-
-btc_bs
-eth_bs
-xrp_bs
-bch_bs
-ada_bs
-
-
-# Stock - quarterly_balance_sheet
-
-st.write("# Stock - quarterly_balance_sheet")
-btc_qbs = BTC_Data.quarterly_balance_sheet
-eth_qbs = ETH_Data.quarterly_balance_sheet
-xrp_qbs = XRP_Data.quarterly_balance_sheet
-bch_qbs = BCH_Data.quarterly_balance_sheet
-ada_qbs = ADA_Data.quarterly_balance_sheet
-
-btc_qbs
-eth_qbs
-xrp_qbs
-bch_qbs
-ada_qbs
-
-
-# Stock - cashflow
-
-st.write("# Stock - cashflow")
-btc_cashflow = BTC_Data.cashflow
-eth_cashflow = ETH_Data.cashflow
-xrp_cashflow = XRP_Data.cashflow
-bch_cashflow = BCH_Data.cashflow
-ada_cashflow = ADA_Data.cashflow
-
-btc_cashflow
-eth_cashflow
-xrp_cashflow
-bch_cashflow
-ada_cashflow
-
-# Stock - earnings
-
-st.write("# Stock - earnings")
-btc_earnings = BTC_Data.earnings
-eth_earnings = ETH_Data.earnings
-xrp_earnings = XRP_Data.earnings
-bch_earnings = BCH_Data.earnings
-ada_earnings = ADA_Data.earnings
-
-btc_earnings
-eth_earnings
-xrp_earnings
-bch_earnings
-ada_earnings
 
 
 
@@ -270,16 +102,7 @@ ada_earnings
 
 
 st.write("BITCOIN ($)")
-imageBTC = Image.open(urlopen('https://s2.coinmarketcap.com/static/img/coins/64x64/1.png'))
 
-# Display Image
 
-st.image(imageBTC)
-  
-# Display dataframe
- 
-st.table(BTC)
- 
-st.bar_chart(BTCHis.Close)
  
  
