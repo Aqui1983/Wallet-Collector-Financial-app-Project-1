@@ -24,7 +24,7 @@ Cardano = 'ADA-USD'
  # Download Stock Data
 
 st.write("# Download Stock Data")
-
+address=st.text_input("Please enter wallet address to be evaluated")
 BTC = yf.download(Bitcoin, period="max", interval="1d")
 ETH = yf.download(Ethereum, period="max", interval="1d")
 XRP = yf.download(Ripple, period="max", interval="1d")
