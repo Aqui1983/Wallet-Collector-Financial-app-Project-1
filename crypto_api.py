@@ -104,7 +104,7 @@ if st.sidebar.button("Enter"):
         st.dataframe(record_df)
         st.subheader('The total value in your Wallet Collection is {assets_total}')
 
-#Annual_Income = st.text_input("Please enter your Annual Income")
+#Annual_Income = st.sidebar.text_input("Please enter your Annual Income")
 #if st.button("Enter"):
     
 
