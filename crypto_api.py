@@ -3,6 +3,7 @@ import requests
 import streamlit as st
 import json
 import pandas as pd
+import plotly.express as px 
 
 # our lists for various functions such as populating coins, addresses, current price of coin and record keeping of accounts entered
 blockchain_list = ["bitcoin", "dogecoin", "ethereum", "xrp"]
@@ -92,9 +93,14 @@ if st.sidebar.button("Enter"):
 
         record_df.drop_duplicates(keep='last', inplace=True)
 
-        #assets_total = record_df[round(total_value_asset,2)].sum()
-        st.subheader(f"You have {amount} {coin} in this account. Its total current value is {round(total_value_asset,2)}")
-        # Header for the dataframe to be displayed and the total value of all your wallets to be displayed on the subheader below.
+        
+        st.write(record_df.keys())
+        
+        assets_total = record_df[record_df.keys()[-1]].sum()
+        
+        st.write(assets_total)
+        st.subheader(f"You have {amount} {coin} in this account. Its total current value is ${round(total_value_asset,2)}")
+
         st.header('Wallet Collection')
         st.dataframe(record_df)
         st.subheader('The total value in your Wallet Collection is {assets_total}')
@@ -103,3 +109,8 @@ if st.sidebar.button("Enter"):
 #if st.button("Enter"):
 
     
+
+# This dataframe has 244 lines, but 4 distinct values for `day`
+#df = px.data.tips()
+#fig = px.pie(df, values='tip', names='day')
+#fig.show()
