@@ -69,11 +69,11 @@ if st.sidebar.button("Enter"):
             f'{BASE}/blockchain-data/{BLOCKCHAIN}/{NETWORK}/addresses/{ADDRESS}/balance', headers=h)
         r.raise_for_status()
         print(json.dumps(r.json(), indent=4, sort_keys=True))
-        
+        # This code deals with type of coins and amount of coins being pulled from the CryptoAPI.io API
         amount = float(r.json()['data']['item']['confirmedBalance']['amount'])
         
         coin = r.json()['data']['item']['confirmedBalance']['unit']
-                
+        # This code deals with the current price on the coins being pulled from the alternative me API        
         price_data = requests.get(GetPrice(token)).json() 
         
         print(json.dumps(price_data, indent=4))
@@ -83,7 +83,7 @@ if st.sidebar.button("Enter"):
         last_price = price_data['data'][crypto_id]['quotes']['USD']['price']
 
         total_value_asset = amount * round(price,2)
-
+        # This code makes the columns for the csv and loads the dataframe, made by the address entries from the streamlit dashboard, into the csv.
         record = [wallet_address, coin, amount, price, total_value_asset]
         
         record_df.loc[len(record_df.index)] = record
@@ -93,13 +93,13 @@ if st.sidebar.button("Enter"):
         record_df.drop_duplicates(keep='last', inplace=True)
 
         #assets_total = record_df[round(total_value_asset,2)].sum()
-        st.write(assets_total)
         st.subheader(f"You have {amount} {coin} in this account. Its total current value is {round(total_value_asset,2)}")
-
+        # Header for the dataframe to be displayed and the total value of all your wallets to be displayed on the subheader below.
         st.header('Wallet Collection')
         st.dataframe(record_df)
         st.subheader('The total value in your Wallet Collection is {assets_total}')
 
 #Annual_Income = st.text_input("Please enter your Annual Income")
 #if st.button("Enter"):
+
     
