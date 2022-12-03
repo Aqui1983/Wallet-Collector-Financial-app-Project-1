@@ -8,4 +8,6 @@ import streamlit as st
 import json
 import plost
 
-Annual_Salary = st.text_input("Please enter your annual Salary")
+Annual_Salary = st.sidebar.text_input("Please enter your annual Salary")
+
+records = pd.readcsv('database.csv')
