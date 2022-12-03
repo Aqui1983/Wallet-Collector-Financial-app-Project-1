@@ -70,11 +70,11 @@ if st.sidebar.button("Enter"):
             f'{BASE}/blockchain-data/{BLOCKCHAIN}/{NETWORK}/addresses/{ADDRESS}/balance', headers=h)
         r.raise_for_status()
         print(json.dumps(r.json(), indent=4, sort_keys=True))
-        
+        # This code deals with type of coins and amount of coins being pulled from the CryptoAPI.io API
         amount = float(r.json()['data']['item']['confirmedBalance']['amount'])
         
         coin = r.json()['data']['item']['confirmedBalance']['unit']
-                
+        # This code deals with the current price on the coins being pulled from the alternative me API        
         price_data = requests.get(GetPrice(token)).json() 
         
         print(json.dumps(price_data, indent=4))
@@ -84,7 +84,7 @@ if st.sidebar.button("Enter"):
         last_price = price_data['data'][crypto_id]['quotes']['USD']['price']
 
         total_value_asset = amount * round(price,2)
-
+        # This code makes the columns for the csv and loads the dataframe, made by the address entries from the streamlit dashboard, into the csv.
         record = [wallet_address, coin, amount, price, total_value_asset]
         
         record_df.loc[len(record_df.index)] = record
@@ -92,6 +92,7 @@ if st.sidebar.button("Enter"):
         record_df.to_csv('database.csv', index = False)
 
         record_df.drop_duplicates(keep='last', inplace=True)
+
         
         st.write(record_df.keys())
         
@@ -106,6 +107,7 @@ if st.sidebar.button("Enter"):
 
 #Annual_Income = st.sidebar.text_input("Please enter your Annual Income")
 #if st.button("Enter"):
+
     
 
 # This dataframe has 244 lines, but 4 distinct values for `day`
