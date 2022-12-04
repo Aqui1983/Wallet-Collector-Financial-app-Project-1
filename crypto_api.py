@@ -4,6 +4,12 @@ import streamlit as st
 import json
 import pandas as pd
 import plotly.express as px 
+import plotly.graph_objects as go
+
+# Page layout
+## Divide page to 3 columns (col1 = sidebar, col2 and col3 = page contents)
+#col1 = st.sidebar
+#col2, col3 = st.columns((2,1))
 
 # our lists for various functions such as populating coins, addresses, current price of coin and record keeping of accounts entered
 blockchain_list = ["bitcoin", "dogecoin", "ethereum", "xrp"]
@@ -94,7 +100,7 @@ if st.sidebar.button("Enter"):
         record_df.drop_duplicates(keep='last', inplace=True)
 
         
-        st.write(record_df.keys())
+        #st.write(record_df.keys())
         
         assets_total = record_df[record_df.keys()[-1]].sum()
         
@@ -105,8 +111,17 @@ if st.sidebar.button("Enter"):
         st.dataframe(record_df)
         st.subheader(f'The total value in your Wallet Collection is {round(assets_total,2)}')
 
-#Annual_Income = st.sidebar.text_input("Please enter your Annual Income")
-#if st.button("Enter"):
+Annual_Income = st.sidebar.text_input("Please enter your Annual Income")
+if st.sidebar.button("Accept"):
+    colors = ['green','gold']
+    assets_total = record_df[record_df.keys()[-1]].sum()
+    fig = go.Figure(data=[go.Pie(labels=['My Annual Income', 'Total Investments'],
+                             values=[Annual_Income, assets_total])])
+    fig.update_traces(hoverinfo='label+percent', textinfo='value', textfont_size=20,
+                  marker=dict(colors=colors, line=dict(color='#000000', width=2)))
+    fig.show()
+    st.write(fig)
+
 
     
 
