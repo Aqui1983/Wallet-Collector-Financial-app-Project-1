@@ -112,15 +112,16 @@ ma2 = st.sidebar.number_input(
     max_value = 120,
     step = 1,    
 )
+if st.sidebar.button('Chart it!'):
 
-# Get the dataframe and add the moving averages
-df = pd.read_csv(f'{ticker}.csv')
-df[f'{ma1}_ma'] = df['Close'].rolling(ma1).mean()
-df[f'{ma2}_ma'] = df['Close'].rolling(ma2).mean()
-df = df[-days_to_plot:]
+    # Get the dataframe and add the moving averages
+    df = pd.read_csv(f'{ticker}.csv')
+    df[f'{ma1}_ma'] = df['Close'].rolling(ma1).mean()
+    df[f'{ma2}_ma'] = df['Close'].rolling(ma2).mean()
+    df = df[-days_to_plot:]
 
-# Display the plotly chart on the dashboard
-st.plotly_chart(
-    get_candlestick_plot(df, ma1, ma2, ticker),
-    use_container_width = True,
-)
+    # Display the plotly chart on the dashboard
+    st.plotly_chart(
+        get_candlestick_plot(df, ma1, ma2, ticker),
+        use_container_width = True,
+    )
