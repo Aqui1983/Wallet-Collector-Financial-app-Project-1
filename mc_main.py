@@ -20,12 +20,19 @@ from plotly.subplots import make_subplots
 from PIL import Image
 from urllib.request import urlopen
 from MCForecastTools_copy import MCSimulation
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup 
 
 #initial functions that need to load before anything else (1)
 
-#Page layout, dividing into 3 columns
+#Page layout, title, dividing into 3 columns with an expander bar
+
 st.set_page_config(layout="wide")
+st.title('Wallet Collector')
+st.markdown("""
+This app can aggregate all of your wallets in one convenient place with unique insights and the ability to look into the future ;)
+
+""")
+expander_bar = st.expander('Price change of top 100 coins DataFrames and coin selector')
 col1 = st.sidebar
 col2, col3 = st.columns((3,1))
 
@@ -264,7 +271,7 @@ if st.sidebar.button("Enter"):
 # Sidebar crptocurrency selector
 
 sorted_coin = sorted(df['coin_symbol'])
-selected_coin = col1.multiselect('Crypotocurrency', sorted_coin, sorted_coin)
+selected_coin = expander_bar.multiselect('Crypotocurrency', sorted_coin, sorted_coin)
 
 # Filtering the data
 df_selected_coin = df[ (df['coin_symbol'].isin(selected_coin))]
@@ -282,10 +289,10 @@ selected_percent_timeframe = percent_dict[percent_timeframe]
 # SIdebar Sort value selector Y/N
 sort_values = col1.selectbox('Sort values?', ['Yes','No'])
 
-col2.subheader('Price Data of Selected Cryptocurrency')
-col2.write('Data Dimension: ' + str(df_selected_coin.shape[0]) + ' rows and ' + str(df_selected_coin.shape[1]) + ' columns.')
+expander_bar.subheader('Price Data of Selected Cryptocurrency')
+expander_bar.write('Data Dimension: ' + str(df_selected_coin.shape[0]) + ' rows and ' + str(df_selected_coin.shape[1]) + ' columns.')
 
-col2.dataframe(df_coins)
+expander_bar.dataframe(df_coins)
 
 # Download data to CSV
 def filedownload(df):
@@ -298,13 +305,13 @@ col2.markdown(filedownload(df_selected_coin), unsafe_allow_html=True)
 
 
 #Bar plot for percentage change in price
-col2.subheader('Table of % Price Change')
+expander_bar.subheader('Table of % Price Change')
 df_change = pd.concat([df_coins.coin_symbol, df_coins.percent_change_1h, df_coins.percent_change_24h, df_coins.percent_change_7d], axis=1)
 df_change = df_change.set_index('coin_symbol')
 df_change['positive_percent_change_1h'] = df_change['percent_change_1h'] > 0
 df_change['positive_percent_change_24h'] = df_change['percent_change_24h'] > 0
 df_change['positive_percent_change_7d'] = df_change['percent_change_7d'] > 0
-col2.dataframe(df_change)
+expander_bar.dataframe(df_change)
 
 # If statements for Bar plot time frame
 col3.subheader('Barplot of % Price Change')
@@ -334,15 +341,16 @@ else:
     df_change['percent_change_1h'].plot(kind='barh', color=df_change.positive_percent_change_1h.map({True: 'g', False: 'r'}))
     col3.pyplot(plt)
 
+
+#Annual income vs Investments
 Annual_Income = st.sidebar.text_input("Please enter your Annual Income")
-if st.sidebar.button("Accept"):
-    colors = ['green','gold']
-    assets_total = record_df[record_df.keys()[-1]].sum()
-    fig = go.Figure(data=[go.Pie(labels=['My Annual Income', 'Total Investments'],
-                             values=[Annual_Income, assets_total])])
-    fig.update_traces(hoverinfo='label+percent', textinfo='value', textfont_size=20,
-                  marker=dict(colors=colors, line=dict(color='#000000', width=2)))
-    col2.write(fig)
+colors = ['green','gold']
+assets_total = record_df[record_df.keys()[-1]].sum()
+fig = go.Figure(data=[go.Pie(labels=['My Annual Income', 'Total Investments'],
+                            values=[Annual_Income, assets_total])])
+fig.update_traces(hoverinfo='label+percent', textinfo='value', textfont_size=20,
+                marker=dict(colors=colors, line=dict(color='#000000', width=2)))
+col2.write(fig)
 
         # MARC TESTING CODE
         #st.dataframe(assets_total)
@@ -417,7 +425,7 @@ bar_chart.update_traces(texttemplate='%{text:.2s}', textposition='outside')
 bar_chart.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
 col2.write(bar_chart)
         
-   # Sidebar options
+# Chart function
 ticker = st.sidebar.selectbox(
     'Ticker to Plot', 
     options = ['BTC', 'ETH', 'XRP', 'DOGE']
@@ -443,19 +451,19 @@ ma2 = st.sidebar.number_input(
     max_value = 120,
     step = 1,    
 )
-if st.sidebar.button('Chart it!'):
 
-    # Get the dataframe and add the moving averages
-    df = pd.read_csv(f'{ticker}.csv')
-    df[f'{ma1}_ma'] = df['Close'].rolling(ma1).mean()
-    df[f'{ma2}_ma'] = df['Close'].rolling(ma2).mean()
-    df = df[-days_to_plot:]
 
-    # Display the plotly chart on the dashboard
-    col2.plotly_chart(
-        get_candlestick_plot(df, ma1, ma2, ticker),
-        use_container_width = True,
-    )       
+# Get the dataframe and add the moving averages
+df = pd.read_csv(f'{ticker}.csv')
+df[f'{ma1}_ma'] = df['Close'].rolling(ma1).mean()
+df[f'{ma2}_ma'] = df['Close'].rolling(ma2).mean()
+df = df[-days_to_plot:]
+
+# Display the plotly chart on the dashboard
+col2.plotly_chart(
+    get_candlestick_plot(df, ma1, ma2, ticker),
+    use_container_width = True,
+)       
         
        
        
@@ -482,81 +490,71 @@ if st.sidebar.button('Chart it!'):
     
     
     
-    record = {
+record = {
+
+'Address': [record_df.keys()[0]],
+'Coins': [record_df.keys()[1]],
+'Amount': [[record_df.keys()[2]]],
+'Last Price': [[record_df.keys()[3]]],
+'Total Value': [[record_df.keys()[4]]]
+}
     
-    'Address': [record_df.keys()[0]],
-    'Coins': [record_df.keys()[1]],
-    'Amount': [[record_df.keys()[2]]],
-    'Last Price': [[record_df.keys()[3]]],
-    'Total Value': [[record_df.keys()[4]]]
-    }
-    
-    # create a dataframe
-    
-    
-    #st.write("Given Dataframe :\n", record_df) 
-    
-    # selecting rows based on condition
-    BTC_df = record_df[record_df[record_df.keys()[1]] == 'BTC']
-    ETH_df = record_df[record_df[record_df.keys()[1]] == 'ETH']
-    XRP_df = record_df[record_df[record_df.keys()[1]] == 'XRP']
-    DOGE_df = record_df[record_df[record_df.keys()[1]] == 'DOGE']
+# create a dataframe
 
 
-    #can comment out or delete
-    #st.write('\nResult dataframe :\n', BTC_df)
-    #st.write('\nResult dataframe :\n', ETH_df)
-    #st.write('\nResult dataframe :\n', DOGE_df)
-    
-    
-    BTC_total = BTC_df.sum()
-    BTC_total_value = BTC_total[BTC_total.keys()[-1]].sum()
-    st.write('\nBitcoin Wallet Value:\n', BTC_total_value)
-    
-    btc_pct = BTC_total_value / total_amount_ml
-    st.write('\Bitcoin % of Portfolio :\n', btc_pct)
-    
-    ETH_total = ETH_df.sum()
-    ETH_total_value = ETH_total[ETH_total.keys()[-1]].sum()
-    st.write('\nEthereum Wallet Value :\n', ETH_total_value)
-    
-    eth_pct = ETH_total_value / total_amount_ml
-    st.write('\Ethereum % of Portfolio :\n', eth_pct)
-    
-    
-    XRP_total = XRP_df.sum()
-    XRP_total_value = XRP_total[XRP_total.keys()[-1]].sum()
-    st.write('\nDogecoin Wallet Value :\n', XRP_total_value)
-    
-    xrp_pct = XRP_total_value / total_amount_ml
-    st.write('\Ripple % of Portfolio :\n', xrp_pct)
-    
-    
-    DOGE_total = DOGE_df.sum()
-    DOGE_total_value = DOGE_total[DOGE_total.keys()[-1]].sum()
-    st.write('\nRipple Wallet Value :\n', DOGE_total_value)
-    
-    doge_pct = DOGE_total_value / total_amount_ml
-    st.write('\nDogecoin % of Portfolio :\n', doge_pct)
+#st.write("Given Dataframe :\n", record_df) 
 
-    coin_weights = (btc_pct, eth_pct, xrp_pct, doge_pct)
-    
-    st.write(coin_weights) 
+# selecting rows based on condition
+BTC_df = record_df[record_df[record_df.keys()[1]] == 'BTC']
+ETH_df = record_df[record_df[record_df.keys()[1]] == 'ETH']
+XRP_df = record_df[record_df[record_df.keys()[1]] == 'XRP']
+DOGE_df = record_df[record_df[record_df.keys()[1]] == 'DOGE']
+
+
+#can comment out or delete
+#st.write('\nResult dataframe :\n', BTC_df)
+#st.write('\nResult dataframe :\n', ETH_df)
+#st.write('\nResult dataframe :\n', DOGE_df)
+
+
+BTC_total = BTC_df.sum()
+BTC_total_value = BTC_total[BTC_total.keys()[-1]].sum()
+st.write('\nBitcoin Wallet Value:\n', BTC_total_value)
+
+btc_pct = BTC_total_value / total_amount_ml
+st.write('\Bitcoin % of Portfolio :\n', btc_pct)
+
+ETH_total = ETH_df.sum()
+ETH_total_value = ETH_total[ETH_total.keys()[-1]].sum()
+st.write('\nEthereum Wallet Value :\n', ETH_total_value)
+
+eth_pct = ETH_total_value / total_amount_ml
+st.write('\Ethereum % of Portfolio :\n', eth_pct)
+
+
+XRP_total = XRP_df.sum()
+XRP_total_value = XRP_total[XRP_total.keys()[-1]].sum()
+st.write('\nDogecoin Wallet Value :\n', XRP_total_value)
+
+xrp_pct = XRP_total_value / total_amount_ml
+st.write('\Ripple % of Portfolio :\n', xrp_pct)
+
+
+DOGE_total = DOGE_df.sum()
+DOGE_total_value = DOGE_total[DOGE_total.keys()[-1]].sum()
+st.write('\nRipple Wallet Value :\n', DOGE_total_value)
+
+doge_pct = DOGE_total_value / total_amount_ml
+st.write('\nDogecoin % of Portfolio :\n', doge_pct)
+
+coin_weights = (btc_pct, eth_pct, xrp_pct, doge_pct)
+
+st.write(coin_weights) 
 
 
         
         
-#imports
-import yfinance as yf
-import pandas as pd
-import numpy as np
-import streamlit as st
-from PIL import Image
-from urllib.request import urlopen
-from MCForecastTools_copy import MCSimulation
-import json
-import matplotlib.pyplot as plt
-import datetime as dt
+# Monte Carlo Section
 
 mc_years_list = ['5', '10', '15', '20', '25', '30']
 
