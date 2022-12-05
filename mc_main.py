@@ -9,18 +9,18 @@ import plotly.graph_objects as go
 import plotly.express as px 
 import plotly.io as pio
 import numpy as np
+import functools
+import matplotlib.pyplot as plt
+import datetime as dt
+import base64
 from st_aggrid import AgGrid
 from st_aggrid.shared import JsCode
 from st_aggrid.grid_options_builder import GridOptionsBuilder
 from plotly.subplots import make_subplots
-import functools
 from PIL import Image
 from urllib.request import urlopen
 from MCForecastTools_copy import MCSimulation
-import matplotlib.pyplot as plt
-import datetime as dt
 from bs4 import BeautifulSoup
-import base64
 
 #initial functions that need to load before anything else (1)
 
