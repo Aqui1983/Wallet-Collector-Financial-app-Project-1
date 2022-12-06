@@ -181,6 +181,9 @@ asset_weights = ""
 
 token = None
 
+Annual_Income = st.sidebar.text_input("Please enter your Annual Income")
+
+
 def GetPrice(token):
     price = f"https://api.alternative.me/v2/ticker/{token}/?convert=USD"
     return(price)
@@ -600,4 +603,16 @@ tbl_5yr = Monte_carlo_sim.summarize_cumulative_return()
 
 col2.write(tbl_5yr)
         
+        # finish working on the monte carlo 
+        # 
         
+        if st.sidebar.button("Accept"):
+            colors = ['green','gold']
+            assets_total = record_df[record_df.keys()[-1]].sum()
+            fig = go.Figure(data=[go.Pie(labels=['My Annual Income', 'Total Investments'],
+                                    values=[Annual_Income, assets_total])])
+            fig.update_traces(hoverinfo='label+percent', textinfo='value', textfont_size=20,
+                        marker=dict(colors=colors, line=dict(color='#000000', width=2)))
+            fig.show()
+            
+            st.write(fig)
