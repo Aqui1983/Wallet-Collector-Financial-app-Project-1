@@ -1,12 +1,29 @@
+
 # **Project-1-Repo-AQML**
+
 ##### *Authors: Anthony Quiles and Marc Leipold*
+
 ## **Project Description**
+
 ### **Goal:**
+
 #### Our goal was to creat a financial app that could be a one stop shop for all your crypto needs. This our first step to making that happen. 
 
 ### **About:**
+
 #### We have created a financial application that can aggregate all of your wallet balances in one central and convenient place. In addition to that we have also provided you with some unique ways to look at and analyse your balances as well as a cool dashboard to let you have a snapshot of the crypto markets at a glance.
 
+### **Example of Initial loadup**
+
+![First Glance of Application](/Users/milluminatillc/Desktop/App_Images/First_glance.jpg)
+
+## **Instructions**
+- #### After opening application you should enter your annual income in the side bar.
+- #### After entering income you will choose which network(Coin) you want to enter an address for and then enter your wallet address.
+- #### Clicking the Enter button will initialize your Wallet Collection and will begin to populate all of your analyzation tools.
+- #### You can also adjust the period for the top 100 coins chart for 7 days, 24hrs, or 1hr.
+- #### The candlestick chart will start on a default coin but you can change it to any coin in your wallet. You can also adjust the amount of days you want in the chart and the customize up to 2 moving averages.
+- #### The final function is the Monte Carlo Simulation where you can possibly have a glimpse up to 10 years in the future of your portfolio. Remember anything contained in this app is not financial advise! Do you own research;)
 ---
 ## **Wallet Aggregator**
 #### The wallet aggregator was pretty straight forward and Marc did an excellent job with this. 
@@ -234,7 +251,7 @@
 }
 '''
 
-- #### The vertical bar chart I made was a bit of a challenge and we almost decided to scrap it altogether but it fell into place just in time. I had to adapt code from a web scraper made by the Data Professor that was not functioning at all. With some proper changes I was able to parse through the json data to get exactly what I needed.
+- #### The vertical bar chart I made was a bit of a challenge and we almost decided to scrap it altogether but it fell into place just in time. I had to adapt code from a web scraper made by the Data Professor that was not functioning at all. With some proper changes I was able to parse through the json data to get exactly what I needed. I had to place this code at the beggining of the file so it populates on the screen immediately and is the first thing that shows up on the dashboard. I also split the page into 4 columns and this chart sits in column 4 and goes down the length of the app.
 '''
 {
     
@@ -286,4 +303,168 @@
 
 }
 '''
-- #### I had to place this code at the beggining of the file so it populates on the screen immediately and is the first thing that shows up on the dashboard. I also split the page into 4 columns and this chart sits in column 4 and goes down the length of the app.
+- #### The following code was implemented later in the file and contains the if statements regarding what duration they want to view.
+'''
+{
+
+    col4.subheader('Barplot of % Price Change')
+
+    if percent_timeframe =='7d':
+        if sort_values =='Yes':
+            df_change =df_change.sort_values(by=['percent_change_7d'])
+        col4.write('*7 days period*')
+        plt.figure(figsize=(2,20))
+        plt.subplots_adjust(top=1, bottom=0)
+        df_change['percent_change_7d'].plot(kind='barh', color=df_change.positive_percent_change_7d.map({True: 'g', False: 'r'}))
+        col4.pyplot(plt)
+    elif percent_timeframe =='24h':
+        if sort_values =='Yes':
+            df_change =df_change.sort_values(by=['percent_change_24h'])
+        col4.write('*24 hour period*')
+        plt.figure(figsize=(20,50))
+        plt.subplots_adjust(top=1, bottom=0)
+        df_change['percent_change_24h'].plot(kind='barh', color=df_change.positive_percent_change_24h.map({True: 'g', False: 'r'}))
+        col4.pyplot(plt)
+    else:
+        if sort_values =='Yes':
+            df_change =df_change.sort_values(by=['percent_change_1h'])
+        col4.write('*1 hour period')
+        plt.figure(figsize=(20,50))
+        plt.subplots_adjust(top=1, bottom=0)
+        df_change['percent_change_1h'].plot(kind='barh', color=df_change.positive_percent_change_1h.map({True: 'g', False: 'r'}))
+        col4.pyplot(plt)
+}
+'''
+### **Candle Stick Chart**
+- #### I had the Candle stick chart which involved getting historical price data for each coin in the aggregator. This code was implemented towards the beggining of the file to have this populate quickly as well as well as the general format of the chart being here too.
+'''
+{
+
+    #initial functions that need to load before anything else (2)
+    #Getting historical price data for candlestick plot
+    BTC = yf.download('BTC-USD')
+    BTC.to_csv('BTC.csv')
+    ETH = yf.download('ETH-USD')
+    ETH.to_csv('ETH.csv')
+    XRP = yf.download('XRP-USD')
+    XRP.to_csv('XRP.csv')
+    DOGE = yf.download('DOGE-USD')
+    DOGE.to_csv('DOGE.csv')
+
+    #defining candlestick plot function
+    def get_candlestick_plot(
+            df: pd.DataFrame,
+            ma1: int,
+            ma2: int,
+            ticker: str
+    ):
+    
+        #Create the candlestick chart with two moving avgs + a plot of the volume
+        #Parameters
+        #----------
+        #df : pd.DataFrame
+            #The price dataframe
+        #ma1 : int
+            #The length of the first moving average (days)
+        #ma2 : int
+            #The length of the second moving average (days)
+        #ticker : str
+            #The ticker we are plotting (for the title).
+        
+        
+        fig = make_subplots(
+            rows = 2,
+            cols = 1,
+            shared_xaxes = True,
+            vertical_spacing = 0.3,
+            subplot_titles = (f'{ticker} Price', 'Volume Chart'),
+            row_width = [0.3, 0.7],
+        )
+        
+        fig.add_trace(
+            go.Candlestick(
+                x = df['Date'],
+                open = df['Open'], 
+                high = df['High'],
+                low = df['Low'],
+                close = df['Close'],
+                name = 'Candlestick chart'
+            ),
+            row = 1,
+            col = 1,
+        )
+        
+        fig.add_trace(
+            go.Line(x = df['Date'], y = df[f'{ma1}_ma'], name = f'{ma1} SMA'),
+            row = 1,
+            col = 1,
+        )
+        
+        fig.add_trace(
+            go.Line(x = df['Date'], y = df[f'{ma2}_ma'], name = f'{ma2} SMA'),
+            row = 1,
+            col = 1,
+        )
+        
+        fig.add_trace(
+            go.Bar(x = df['Date'], y = df['Volume'], name = 'Volume'),
+            row = 2,
+            col = 1,
+        )
+        
+        fig['layout']['xaxis2']['title'] = 'Date'
+        fig['layout']['yaxis']['title'] = 'Price'
+        fig['layout']['yaxis2']['title'] = 'Volume'
+        
+
+        
+        return fig
+}
+'''
+
+- #### The rest of the code for candle stick chart is towards the end of the file because I wanted it to print up after the initial analysis of you portfolio. I also icluded a select box in the sidebar so the user can pick which coin they want to view in the chart.
+'''
+{
+
+
+    # Candle stick Chart function
+    ticker = st.sidebar.selectbox(
+        'Ticker to Plot', 
+        options = ['BTC', 'ETH', 'XRP', 'DOGE']
+    )
+
+    days_to_plot = st.sidebar.slider(
+        'Days to Plot', 
+        min_value = 1,
+        max_value = 300,
+        value = 120,
+    )
+    ma1 = st.sidebar.number_input(
+        'Moving Average #1 Length',
+        value = 10,
+        min_value = 1,
+        max_value = 120,
+        step = 1,    
+    )
+    ma2 = st.sidebar.number_input(
+        'Moving Average #2 Length',
+        value = 20,
+        min_value = 1,
+        max_value = 120,
+        step = 1,    
+    )
+
+
+    # Get the dataframe and add the moving averages
+    df = pd.read_csv(f'{ticker}.csv')
+    df[f'{ma1}_ma'] = df['Close'].rolling(ma1).mean()
+    df[f'{ma2}_ma'] = df['Close'].rolling(ma2).mean()
+    df = df[-days_to_plot:]
+
+    # Display the plotly chart on the dashboard
+    col2.plotly_chart(
+        get_candlestick_plot(df, ma1, ma2, ticker),
+        use_container_width = True,
+    )        
+}
+'''
