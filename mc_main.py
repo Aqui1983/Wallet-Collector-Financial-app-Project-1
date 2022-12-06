@@ -34,7 +34,9 @@ This app can aggregate all of your wallets in one convenient place with unique i
 """)
 expander_bar = st.expander('Price change of top 100 coins DataFrames and coin selector')
 col1 = st.sidebar
-col2, col3 = st.columns((3,1))
+col2, col3, col4 = st.columns((2,2,1))
+
+
 
 #Web Scraper functions to have it display immediately
 @st.cache
@@ -118,9 +120,9 @@ def get_candlestick_plot(
         rows = 2,
         cols = 1,
         shared_xaxes = True,
-        vertical_spacing = 0.2,
+        vertical_spacing = 0.3,
         subplot_titles = (f'{ticker} Price', 'Volume Chart'),
-        row_width = [0.3, 0.7]
+        row_width = [0.3, 0.7],
     )
     
     fig.add_trace(
@@ -190,8 +192,8 @@ def GetPrice(token):
 # Dummy Addresses
     # BTC = n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF
     # ETH = 0x00000000219ab540356cbb839cbe05303d7705fa
-    # XRP = rBiu2po3VWmD9N7XBMmGRpDe7qLwFTegyW
-    # DOGE = nbMFaHF9pjNoohS4fD1jefKBgDnETK9uPu , ndptgeN9zESnZgc84bXFshFhyxx3PzKtpY , niPMVR1mhcyL63BeXaBwJiiKCccFwV7xHh
+    # XRP = rPd9oB2Kdot9HSsXSeFYpKZUV3vDsBzv73
+    # DOGE = nq3ztBbL2gYz5uDeHWKe6AWXsRt19uiVHo
 
 # IF statement for network
 
@@ -314,35 +316,35 @@ df_change['positive_percent_change_7d'] = df_change['percent_change_7d'] > 0
 expander_bar.dataframe(df_change)
 
 # If statements for Bar plot time frame
-col3.subheader('Barplot of % Price Change')
+col4.subheader('Barplot of % Price Change')
 
 if percent_timeframe =='7d':
     if sort_values =='Yes':
         df_change =df_change.sort_values(by=['percent_change_7d'])
-    col3.write('*7 days period*')
+    col4.write('*7 days period*')
     plt.figure(figsize=(2,20))
     plt.subplots_adjust(top=1, bottom=0)
     df_change['percent_change_7d'].plot(kind='barh', color=df_change.positive_percent_change_7d.map({True: 'g', False: 'r'}))
-    col3.pyplot(plt)
+    col4.pyplot(plt)
 elif percent_timeframe =='24h':
     if sort_values =='Yes':
         df_change =df_change.sort_values(by=['percent_change_24h'])
-    col3.write('*24 hour period*')
+    col4.write('*24 hour period*')
     plt.figure(figsize=(20,50))
     plt.subplots_adjust(top=1, bottom=0)
     df_change['percent_change_24h'].plot(kind='barh', color=df_change.positive_percent_change_24h.map({True: 'g', False: 'r'}))
-    col3.pyplot(plt)
+    col4.pyplot(plt)
 else:
     if sort_values =='Yes':
         df_change =df_change.sort_values(by=['percent_change_1h'])
-    col3.write('*1 hour period')
+    col4.write('*1 hour period')
     plt.figure(figsize=(20,50))
     plt.subplots_adjust(top=1, bottom=0)
     df_change['percent_change_1h'].plot(kind='barh', color=df_change.positive_percent_change_1h.map({True: 'g', False: 'r'}))
-    col3.pyplot(plt)
+    col4.pyplot(plt)
 
 
-#Annual income vs Investments
+#Annual income vs Investments Pie chart
 Annual_Income = st.sidebar.text_input("Please enter your Annual Income")
 colors = ['green','gold']
 assets_total = record_df[record_df.keys()[-1]].sum()
@@ -356,9 +358,9 @@ col2.write(fig)
         #st.dataframe(assets_total)
 #st.write('The total value in your Wallet Collection is:')
         
-#total_amount_ml = record_df[record_df.keys()[-1]].sum()
+total_amount_ml = record_df[record_df.keys()[-1]].sum()
 
-#total_amount_ml = round(total_amount_ml,2)
+total_amount_ml = round(total_amount_ml,2)
 
 #st.write(total_amount_ml)
                 
@@ -390,26 +392,25 @@ COMMON_ARGS = {
     ],
 }  
 
-### Pie Chart
+### Pie Chart coin percentages
 chart = functools.partial(st.plotly_chart, use_container_width=True)
 
-col2.subheader("Value of each Symbol")
-col2.write("Pie Chart")
-
+col3.subheader("Value of each Symbol")
 
 pie_chart = px.pie(
     record_df, 
     values=record_df.keys()[-1], 
     names=record_df.keys()[1],
+    #**COMMON_ARGS
     )
 
-pie_chart.update_layout(margin=dict(t=0, b=0, l=0, r=0))
+#pie_chart.update_layout(margin=dict(t=0, b=0, l=0, r=0))
 
-col2.write(pie_chart)
+col3.write(pie_chart)
         
         
         
-# Bar Chart of each symbol
+# Bar Chart of each symbol $ Value
 
 col2.subheader("Value of each Symbol")
 col2.write("Bar Chart")
@@ -419,13 +420,15 @@ bar_chart = px.bar(
     y=record_df.keys()[-1], 
     x=record_df.keys()[1], 
     text=record_df.keys()[-1],
+    width=1100,
+    height=500
     )
 
 bar_chart.update_traces(texttemplate='%{text:.2s}', textposition='outside')
 bar_chart.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
 col2.write(bar_chart)
         
-# Chart function
+# Candle stick Chart function
 ticker = st.sidebar.selectbox(
     'Ticker to Plot', 
     options = ['BTC', 'ETH', 'XRP', 'DOGE']
@@ -472,21 +475,21 @@ col2.plotly_chart(
        
     # Coin percentage of total value
 
-    #st.subheader("Coin percentage of total value")
-    #st.write("Formula working brainstorm")
+col2.subheader("Coin percentage of total value")
+col2.write("Formula working brainstorm")
+
+record_df.sum(record_df.keys()[1] == 'BTC')
+
+col2.write(record_df)
     
-    #record_df.sum(record_df.keys()[1] == 'BTC')
-    
-    #st.write(record_df)
-        
-    #print(df.loc['r4']['Duration'])
-    #print(df.loc['r4'][2])
-    
-    
-    # BTC_pct = record_df[record_df.keys()[1] == 'BTC']
-    
-    
-    #  st.write(BTC_pct).sum()
+#print(df.loc['r4']['Duration'])
+#print(df.loc['r4'][2])
+
+
+#BTC_pct = record_df[record_df.keys()[1] == 'BTC']
+
+
+#st.write(BTC_pct).sum()
     
     
     
@@ -519,47 +522,48 @@ DOGE_df = record_df[record_df[record_df.keys()[1]] == 'DOGE']
 
 BTC_total = BTC_df.sum()
 BTC_total_value = BTC_total[BTC_total.keys()[-1]].sum()
-st.write('\nBitcoin Wallet Value:\n', BTC_total_value)
+#st.write('\nBitcoin Wallet Value:\n', BTC_total_value)
 
 btc_pct = BTC_total_value / total_amount_ml
-st.write('\Bitcoin % of Portfolio :\n', btc_pct)
+#st.write('\Bitcoin % of Portfolio :\n', btc_pct)
 
 ETH_total = ETH_df.sum()
 ETH_total_value = ETH_total[ETH_total.keys()[-1]].sum()
-st.write('\nEthereum Wallet Value :\n', ETH_total_value)
+#st.write('\nEthereum Wallet Value :\n', ETH_total_value)
 
 eth_pct = ETH_total_value / total_amount_ml
-st.write('\Ethereum % of Portfolio :\n', eth_pct)
+#st.write('\nEthereum % of Portfolio :\n', eth_pct)
 
 
 XRP_total = XRP_df.sum()
 XRP_total_value = XRP_total[XRP_total.keys()[-1]].sum()
-st.write('\nDogecoin Wallet Value :\n', XRP_total_value)
+#st.write('\nRipple Wallet Value :\n', XRP_total_value)
 
 xrp_pct = XRP_total_value / total_amount_ml
-st.write('\Ripple % of Portfolio :\n', xrp_pct)
+#st.write('\nRipple % of Portfolio :\n', xrp_pct)
 
 
 DOGE_total = DOGE_df.sum()
 DOGE_total_value = DOGE_total[DOGE_total.keys()[-1]].sum()
-st.write('\nRipple Wallet Value :\n', DOGE_total_value)
+#st.write('\nDogecoin Wallet Value :\n', DOGE_total_value)
 
 doge_pct = DOGE_total_value / total_amount_ml
-st.write('\nDogecoin % of Portfolio :\n', doge_pct)
+#st.write('\nDogecoin % of Portfolio :\n', doge_pct)
 
 coin_weights = (btc_pct, eth_pct, xrp_pct, doge_pct)
 
-st.write(coin_weights) 
+#st.write(coin_weights) 
 
 
         
         
 # Monte Carlo Section
 
-mc_years_list = ['5', '10', '15', '20', '25', '30']
+#mc_years_list = ['5', '10', '15', '20', '25', '30']
 
 #st.write(mc_years_list)
 
+years = col2.slider('How many years into the future do you want to see?', min_value=1, max_value=10, step=1)
 Bitcoin = 'BTC-USD'
 Ethereum = 'ETH-USD'
 Ripple = 'XRP-USD'
@@ -578,18 +582,32 @@ DOG = yf.download(Dogecoin, period="max", interval="1d")
 All_coins_hist_df = pd.concat([BTC, ETH, XRP, DOG],axis=1, keys=['BTC', 'ETH', 'XRP', 'DOG'])
 All_coins_hist_df = All_coins_hist_df.dropna()
 
-# display(All_coins_hist_df.head())
-#display(All_coins_hist_df.tail())
 
+# Start of Monte Carlo Simulation
+if col2.button('RUN'):
+    col2.write('Calculating results...')
+    
+    Monte_carlo_sim = MCSimulation(
+        portfolio_data = All_coins_hist_df,
+        weights = [btc_pct, eth_pct, xrp_pct, doge_pct],
+        num_simulation = 50,
+        num_trading_days = 365 * years
+    )
+    daily_returns_df = Monte_carlo_sim.calc_cumulative_return()
+    #st.write(daily_returns_df)
+    mc_chart = px.line(
+        Monte_carlo_sim.simulated_return, 
+        width=800, 
+        height=600,
+        labels = {'index': "Number of Days", "value":"Returns"})
+    col2.write(mc_chart)
+    #line_plot_MC_sim = Monte_carlo_sim.plot_simulation()
+    #plt.savefig('image1.png')
+    # img=plt.imread('image1.png')
+    # col2.image(img)
 
-#Monte_carlo_sim = MCSimulation(
-    #portfolio_data = All_coins_hist_df,
-    #weights = [btc_pct, eth_pct, xrp_pct, doge_pct],
-    #num_simulation = 500,
-    #num_trading_days = 365 * mc_years_list
-#)
+    tbl_5yr = Monte_carlo_sim.summarize_cumulative_return()
 
-
-#st.selectbox('How many years into the future do you want to see?', mc_years_list)
+    col2.write(tbl_5yr)
         
         
