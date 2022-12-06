@@ -342,7 +342,7 @@ else:
     col4.pyplot(plt)
 
 
-#Annual income vs Investments
+#Annual income vs Investments Pie chart
 Annual_Income = st.sidebar.text_input("Please enter your Annual Income")
 colors = ['green','gold']
 assets_total = record_df[record_df.keys()[-1]].sum()
@@ -390,7 +390,7 @@ COMMON_ARGS = {
     ],
 }  
 
-### Pie Chart
+### Pie Chart coin percentages
 chart = functools.partial(st.plotly_chart, use_container_width=True)
 
 col3.subheader("Value of each Symbol")
@@ -410,7 +410,7 @@ col3.write(pie_chart)
         
         
         
-# Bar Chart of each symbol
+# Bar Chart of each symbol $ Value
 
 col2.subheader("Value of each Symbol")
 col2.write("Bar Chart")
@@ -428,7 +428,7 @@ bar_chart.update_traces(texttemplate='%{text:.2s}', textposition='outside')
 bar_chart.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
 col2.write(bar_chart)
         
-# Chart function
+# Candle stick Chart function
 ticker = st.sidebar.selectbox(
     'Ticker to Plot', 
     options = ['BTC', 'ETH', 'XRP', 'DOGE']
