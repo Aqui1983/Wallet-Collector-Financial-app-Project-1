@@ -210,3 +210,80 @@
 
 ### **Bar Charts**
 - #### We were both in charge of a bar chart with Marc making one for the dollar value of each coin in the portfolio and my chart being the result of a web scraper function to display the top 100 performing coins as part of our dashboard. 
+- #### Marc used plotly express for his chart with a pretty straight forward approach:
+'''
+{
+
+    # Bar Chart of each symbol $ Value
+
+    col2.subheader("Value of each Symbol")
+    col2.write("Bar Chart")
+
+    bar_chart = px.bar(
+        record_df, 
+        y=record_df.keys()[-1], 
+        x=record_df.keys()[1], 
+        text=record_df.keys()[-1],
+        width=1100,
+        height=500
+        )
+
+    bar_chart.update_traces(texttemplate='%{text:.2s}', textposition='outside')
+    bar_chart.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
+    col2.write(bar_chart)
+}
+'''
+
+- #### The vertical bar chart I made was a bit of a challenge and we almost decided to scrap it altogether but it fell into place just in time. I had to adapt code from a web scraper made by the Data Professor that was not functioning at all. With some proper changes I was able to parse through the json data to get exactly what I needed.
+'''
+{
+    
+    @st.cache
+    def scrape_data():
+        cmc = requests.get('https://www.coinmarketcap.com')
+        soup = BeautifulSoup(cmc.content, 'html.parser')
+        #cleaning the data to be used for the pct_change bar plot
+        data = soup.find('script', id='__NEXT_DATA__', type='application/json')
+        coins = {}
+        coin_data = json.loads(data.contents[0])
+        listings = json.loads(coin_data['props']['initialState'])['cryptocurrency']['listingLatest']['data']
+
+    #finding the coin names in the data and making the lists for each column
+        for i in listings[1:]:
+            coins[i[-4]] = i[-4]
+    
+        coin_name = []
+        coin_symbol = []
+        market_cap = []
+        percent_change_1h= []
+        percent_change_24h = []
+        percent_change_7d = []
+        price = []
+        volume_24h = []
+        for i in listings[1:]:
+            coin_name.append(i[14])
+            coin_symbol.append(i[-4])
+            price.append(i[64])
+            percent_change_1h.append(i[58])
+            percent_change_24h.append(i[59])
+            percent_change_7d.append(i[62])
+            market_cap.append(i[55])
+            volume_24h.append(i[67])
+        #concacting the dataframe that will be used for display
+        df = pd.DataFrame(columns=['coin_name', 'coin_symbol', 'market_cap', 'percent_change_1h', 'percent_change_24h', 'percent_change_7d', 'price', 'volume_24h'])
+        df['coin_name'] = coin_name
+        df['coin_symbol'] = coin_symbol
+        df['price'] = price
+        df['percent_change_1h'] = percent_change_1h
+        df['percent_change_24h'] = percent_change_24h
+        df['percent_change_7d'] = percent_change_7d
+        df['market_cap'] = market_cap
+        df['volume_24h'] = volume_24h
+        return df
+
+
+    df = scrape_data()
+
+}
+'''
+- #### I had to place this code at the beggining of the file so it populates on the screen immediately and is the first thing that shows up on the dashboard. I also split the page into 4 columns and this chart sits in column 4 and goes down the length of the app.

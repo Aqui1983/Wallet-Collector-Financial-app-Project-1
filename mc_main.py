@@ -475,12 +475,12 @@ col2.plotly_chart(
        
     # Coin percentage of total value
 
-st.subheader("Coin percentage of total value")
-st.write("Formula working brainstorm")
+#st.subheader("Coin percentage of total value")
+#st.write("Formula working brainstorm")
 
-record_df.sum(record_df.keys()[1] == 'BTC')
+#record_df.sum(record_df.keys()[1] == 'BTC')
 
-st.write(record_df)
+#st.write(record_df)
     
 #print(df.loc['r4']['Duration'])
 #print(df.loc['r4'][2])
@@ -563,7 +563,7 @@ coin_weights = (btc_pct, eth_pct, xrp_pct, doge_pct)
 
 #st.write(mc_years_list)
 
-years = st.slider('How many years into the future do you want to see?', min_value=1, max_value=10, step=1)
+years = col2.slider('How many years into the future do you want to see?', min_value=1, max_value=10, step=1)
 Bitcoin = 'BTC-USD'
 Ethereum = 'ETH-USD'
 Ripple = 'XRP-USD'
@@ -594,10 +594,10 @@ daily_returns_df = Monte_carlo_sim.calc_cumulative_return()
 line_plot_MC_sim = Monte_carlo_sim.plot_simulation()
 plt.savefig('image1.png')
 img=plt.imread('image1.png')
-st.image(img)
+col2.image(img)
 
 tbl_5yr = Monte_carlo_sim.summarize_cumulative_return()
 
-st.write(tbl_5yr)
+col2.write(tbl_5yr)
         
         
