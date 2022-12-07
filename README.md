@@ -3,6 +3,8 @@
 
 ##### *Authors: Anthony Quiles and Marc Leipold*
 
+Presentation Deck: https://docs.google.com/presentation/d/1ZAJ1-wr9_gxGVOyZH2vmz5WFDBLKj5DhnQ1cB0mnfr0/
+
 ## **Project Description**
 
 ### **Goal:**
@@ -131,9 +133,12 @@
 ---
 
 ## **Visualizations**
+
 #### The visualizations were pretty tricky but very fun to do, they consist of a vertical bar chart, 2 pie charts, a candlestick chart, monte carlo simulation plot, and a regular bar chart.
 
 - #### Marc was in charge of the Monte carlo plot, a bar chart representing the value of each coin, and a pie chart thatshows the percentage breakdown of all coins in the aggregator.
+
+
 - #### I was in charge of a table of assets, pie chart that shows total assets vs annual income, candle stick chart with a couple of indicators, and the bar chart that shows percentage change over the last 7 day, 24hrs and 1 hr for the top 100 coins.
 ### **Monte Carlo**
 - #### We started by adusting some of the code in MCForecastTools to make it work for cryptocurrency. I switched the trading days from 252 to 365 and I also adjusted some column names for the data being read in. After that Marc brought in some historical price data for the 4 coins in our wallet and then customized the MCSimulation to accept custom variables that the user would choose on a slider and weight variables that were calculated before hand when we cleaned the data. We printed out the resulting plot and some additional analytical information from summarize_cumulative_return() attribute.
@@ -141,6 +146,9 @@
 {
 
         # Monte Carlo Section
+
+<img src="https://github.com/marcleipold/Project-1-Repo-AQML/blob/main/images/monte_carlo_sim.jpg" alt="Monte-Carlo-Sim" title="Montecarlo Simulation">
+
 
     #mc_years_list = ['5', '10', '15', '20', '25', '30']
 
@@ -185,6 +193,9 @@
 }
 '''
 ### **Pie Charts**
+
+<img src="https://github.com/marcleipold/Project-1-Repo-AQML/blob/main/images/pie_charts.jpg" alt="Pie-Chart" title="Pie Chart Figure">
+
 - #### We were both in charge of a pie chart each and they were both pretty straight forward with just different approaches and libraries of plotly.
 - #### I used graph_objects in plotly to make my chart and I also included a field in the sidebar for the user to enter their annual income: 
 '''
@@ -228,6 +239,10 @@
 '''
 
 ### **Bar Charts**
+
+<img src="https://github.com/marcleipold/Project-1-Repo-AQML/blob/main/images/bar_chart.jpg" alt="Bar-Chart" title="Bar Chart Figure">
+
+
 - #### We were both in charge of a bar chart with Marc making one for the dollar value of each coin in the portfolio and my chart being the result of a web scraper function to display the top 100 performing coins as part of our dashboard. 
 - #### Marc used plotly express for his chart with a pretty straight forward approach:
 '''
@@ -255,6 +270,10 @@
 
 - #### The vertical bar chart I made was a bit of a challenge and we almost decided to scrap it altogether but it fell into place just in time. I had to adapt code from a web scraper made by the Data Professor that was not functioning at all. With some proper changes I was able to parse through the json data to get exactly what I needed. I had to place this code at the beggining of the file so it populates on the screen immediately and is the first thing that shows up on the dashboard. I also split the page into 4 columns and this chart sits in column 4 and goes down the length of the app.
 '''
+
+<img src="https://github.com/marcleipold/Project-1-Repo-AQML/blob/main/images/Web_scraper.jpg" alt="Bar-Plot" title="Bar Plot + Web Scraper">
+
+
 {
     
     @st.cache
@@ -338,8 +357,13 @@
 }
 '''
 ### **Candle Stick Chart**
+
+<img src="https://github.com/marcleipold/Project-1-Repo-AQML/blob/main/images/candle_stick_chart.jpg" alt="Candle-stick-Chart" title="Candle Stick Chart">
+
+
 - #### I had the Candle stick chart which involved getting historical price data for each coin in the aggregator. This code was implemented towards the beggining of the file to have this populate quickly as well as well as the general format of the chart being here too.
 '''
+
 {
 
     #initial functions that need to load before anything else (2)
@@ -470,3 +494,13 @@
     )        
 }
 '''
+
+#Results - Final dashboard layout
+
+<img src="https://github.com/marcleipold/Project-1-Repo-AQML/blob/main/images/First_glance.jpg" alt="Dashboard v1.0" title="Dashboard v1.0">
+
+#Dashboard Sidebar
+
+<img src="https://github.com/marcleipold/Project-1-Repo-AQML/blob/main/images/side_bar_functions.jpg" alt="Side Dashboard v1.0" title="Sidebar Dashboard v1.0">
+
+
