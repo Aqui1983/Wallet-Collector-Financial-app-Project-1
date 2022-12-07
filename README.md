@@ -15,7 +15,9 @@
 
 ### **Example of Initial loadup**
 
-![First Glance of Application](/Users/milluminatillc/Desktop/App_Images/First_glance.jpg)
+
+
+
 
 ## **Instructions**
 - #### After opening application you should enter your annual income in the side bar.
