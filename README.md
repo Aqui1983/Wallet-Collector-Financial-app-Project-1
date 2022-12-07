@@ -14,7 +14,7 @@
 #### We have created a financial application that can aggregate all of your wallet balances in one central and convenient place. In addition to that we have also provided you with some unique ways to look at and analyse your balances as well as a cool dashboard to let you have a snapshot of the crypto markets at a glance.
 
 ### **Example of Initial loadup**
-
+![First glance of app](images/First_glance.jpg)
 
 
 
