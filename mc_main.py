@@ -606,8 +606,8 @@ if col2.button('Run'):
     ci_upper = round(tbl[9])
 
     #col2.write(tbl)
-    col2.write("Your average rate of return is a {mean}x of your current portfolio worth after holding for {years}")
-    col2.write("There is a 95 percent chance that your portfolio will give you a return between {ci_lower}x and {ci_upper}")
+    col2.write(f"Your average rate of return is a {mean}x of your current portfolio worth after holding for {years} year(s)")
+    col2.write(f"There is a 95 percent chance that your portfolio will give you a return between {round(ci_lower,4)}x and {ci_upper}x of the current value of your portfolio")
         
 # finish working on the monte carlo 
 # 
