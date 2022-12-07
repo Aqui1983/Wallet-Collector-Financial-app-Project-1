@@ -181,8 +181,6 @@ asset_weights = ""
 
 token = None
 
-Annual_Income = st.sidebar.text_input("Please enter your Annual Income")
-
 
 def GetPrice(token):
     price = f"https://api.alternative.me/v2/ticker/{token}/?convert=USD"
@@ -396,9 +394,7 @@ COMMON_ARGS = {
 ### Pie Chart coin percentages
 chart = functools.partial(st.plotly_chart, use_container_width=True)
 
-col3.subheader("Value of each Symbol")
-col3.write("Pie Chart")
-
+col2.subheader("Value of each Symbol")
 
 pie_chart = px.pie(
     record_df, 
@@ -407,9 +403,9 @@ pie_chart = px.pie(
     #**COMMON_ARGS
     )
 
-pie_chart.update_layout(margin=dict(t=0, b=0, l=0, r=0))
+#pie_chart.update_layout(margin=dict(t=0, b=0, l=0, r=0))
 
-col3.write(pie_chart)
+col2.write(pie_chart)
         
         
         
@@ -585,34 +581,35 @@ DOG = yf.download(Dogecoin, period="max", interval="1d")
 All_coins_hist_df = pd.concat([BTC, ETH, XRP, DOG],axis=1, keys=['BTC', 'ETH', 'XRP', 'DOG'])
 All_coins_hist_df = All_coins_hist_df.dropna()
 
-Monte_carlo_sim = MCSimulation(
-    portfolio_data = All_coins_hist_df,
-    weights = [btc_pct, eth_pct, xrp_pct, doge_pct],
-    num_simulation = 500,
-    num_trading_days = 365 * years
-)
-daily_returns_df = Monte_carlo_sim.calc_cumulative_return()
-#st.write(daily_returns_df)
+if col2.button('Run'):
+    col2.write('Calculating results...')
 
-line_plot_MC_sim = Monte_carlo_sim.plot_simulation()
-plt.savefig('image1.png')
-img=plt.imread('image1.png')
-col2.image(img)
+    Monte_carlo_sim = MCSimulation(
+        portfolio_data = All_coins_hist_df,
+        weights = [btc_pct, eth_pct, xrp_pct, doge_pct],
+        num_simulation = 500,
+        num_trading_days = 365 * years
+    )
+    daily_returns_df = Monte_carlo_sim.calc_cumulative_return()
+    #st.write(daily_returns_df)
 
-tbl_5yr = Monte_carlo_sim.summarize_cumulative_return()
+    mc_chart = px.line(
+        Monte_carlo_sim.simulated_return, 
+        width=800, 
+        height=600,
+        labels = {'index': "Number of Days", "value":"Returns"})
+    col2.write(mc_chart)
 
-col2.write(tbl_5yr)
+    tbl = Monte_carlo_sim.summarize_cumulative_return()
+    mean = round(tbl[1])
+    ci_lower = round(tbl[8])
+    ci_upper = round(tbl[9])
+
+    #col2.write(tbl)
+    col2.write("Your average rate of return is a {mean}x of your current portfolio worth after holding for {years}")
+    col2.write("There is a 95 percent chance that your portfolio will give you a return between {ci_lower}x and {ci_upper}")
         
-        # finish working on the monte carlo 
-        # 
-        
-        if st.sidebar.button("Accept"):
-            colors = ['green','gold']
-            assets_total = record_df[record_df.keys()[-1]].sum()
-            fig = go.Figure(data=[go.Pie(labels=['My Annual Income', 'Total Investments'],
-                                    values=[Annual_Income, assets_total])])
-            fig.update_traces(hoverinfo='label+percent', textinfo='value', textfont_size=20,
-                        marker=dict(colors=colors, line=dict(color='#000000', width=2)))
-            fig.show()
-            
-            st.write(fig)
+# finish working on the monte carlo 
+# 
+
+
