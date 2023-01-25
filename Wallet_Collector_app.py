@@ -39,15 +39,17 @@ col2, col3, col4 = st.columns((2,2,1))
 #Web Scraper functions to have it display immediately
 @st.cache
 def scrape_data():
-    cmc = requests.get('https://www.coinmarketcap.com')
-    soup = BeautifulSoup(cmc.content, 'html.parser')
-    #cleaning the data to be used for the pct_change bar plot
-    data = soup.find('script', id='__NEXT_DATA__', type='application/json')
-    coins = {}
-    coin_data = json.loads(data.contents[0])
-    listings = json.loads(coin_data['props']['initialState'])['cryptocurrency']['listingLatest']['data']
-
-    #finding the coin names in the data and making the lists for each column
+    try:
+        cmc = requests.get('https://www.coinmarketcap.com')
+        soup = BeautifulSoup(cmc.content, 'html.parser')
+        #cleaning the data to be used for the pct_change bar plot
+        data = soup.find('script', id='__NEXT_DATA__', type='application/json')
+        coins = {}
+        coin_data = json.loads(data.contents[0])
+        listings = json.loads(coin_data['props']['initialState'])['cryptocurrency']['listingLatest']['data']
+    except:
+        print("An error occurred while connecting to the website or parsing the data.")
+        return None
     for i in listings[1:]:
         coins[i[-4]] = i[-4]
     
@@ -62,13 +64,13 @@ def scrape_data():
     for i in listings[1:]:
         coin_name.append(i[14])
         coin_symbol.append(i[-4])
-        price.append(i[64])
-        percent_change_1h.append(i[58])
-        percent_change_24h.append(i[59])
-        percent_change_7d.append(i[62])
-        market_cap.append(i[55])
-        volume_24h.append(i[67])
-    #concacting the dataframe that will be used for display
+        price.append(i[-13])
+        percent_change_1h.append(i[-19])
+        percent_change_24h.append(i[-18])
+        percent_change_7d.append(i[-15])
+        market_cap.append(i[-22])
+        volume_24h.append(i[-10])
+    # Putting together the dataframe that will be used for display
     df = pd.DataFrame(columns=['coin_name', 'coin_symbol', 'market_cap', 'percent_change_1h', 'percent_change_24h', 'percent_change_7d', 'price', 'volume_24h'])
     df['coin_name'] = coin_name
     df['coin_symbol'] = coin_symbol
@@ -82,6 +84,7 @@ def scrape_data():
 
 
 df = scrape_data()
+
 #initial functions that need to load before anything else (2)
 #Getting historical price data for candlestick plot
 BTC = yf.download('BTC-USD')
@@ -171,8 +174,6 @@ blockchain_selection = st.sidebar.selectbox("Please select the blockchain for yo
 
 wallet_address = st.sidebar.text_input("Please enter your wallet address")
 
-record_df = pd.read_csv('database.csv')
-
 total_value_asset = None
 
 crypto_id = ""
@@ -246,15 +247,18 @@ if st.sidebar.button("Enter"):
         total_value_asset = amount * round(price,2)
 
         record = [wallet_address, coin, amount, price, total_value_asset]
+
+        record_df = pd.DataFrame(columns=['Address', 'coin', 'amount', 'price', 'total_value_asset'])
         
         record_df.loc[len(record_df.index)] = record
         
         record_df.to_csv('database.csv', index = False)
+        
+        record_df = pd.read_csv('database.csv')
 
         record_df.drop_duplicates(subset='Address', keep='last', inplace=True)
        
-    
-        record_df.drop_duplicates(keep='last', inplace=True)
+        #record_df.drop_duplicates(keep='last', inplace=True)
         
         #st.write(record_df.keys())
         
@@ -344,6 +348,7 @@ else:
 
 
 #Annual income vs Investments Pie chart
+record_df = pd.read_csv('database.csv')
 Annual_Income = st.sidebar.text_input("Please enter your Annual Income")
 colors = ['green','gold']
 assets_total = record_df[record_df.keys()[-1]].sum()
